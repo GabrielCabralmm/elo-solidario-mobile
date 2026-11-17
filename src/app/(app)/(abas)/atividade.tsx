@@ -98,25 +98,30 @@ export default function TelaAtividade() {
           />
         }
         renderItem={({ item }) => (
-          <Pressable
-            accessibilityRole="button"
-            style={styles.cartao}
-            onPress={() => router.push(`/doacao/${item.idDoacao}`)}
-          >
-            <View style={styles.linha}>
-              <Text style={[tipografia.subtitulo, styles.flex]}>{item.doacao}</Text>
-              <Etiqueta
-                texto={rotuloStatusReserva[item.status]}
-                tom={tomStatusReserva[item.status]}
-              />
-            </View>
-            <Text style={tipografia.corpo}>Retirar em: {item.localRetirada}</Text>
-            <Text style={tipografia.legenda}>Reservado em {formatarDataHora(item.dtReserva)}</Text>
-            {item.dtRetirada && (
+          <View style={styles.cartao}>
+            <Pressable
+              accessibilityRole="button"
+              accessibilityHint="Abre os detalhes da doação"
+              style={({ pressed }) => [styles.areaToque, pressed && styles.pressionado]}
+              onPress={() => router.push(`/doacao/${item.idDoacao}`)}
+            >
+              <View style={styles.linha}>
+                <Text style={[tipografia.subtitulo, styles.flex]}>{item.doacao}</Text>
+                <Etiqueta
+                  texto={rotuloStatusReserva[item.status]}
+                  tom={tomStatusReserva[item.status]}
+                />
+              </View>
+              <Text style={tipografia.corpo}>Retirar em: {item.localRetirada}</Text>
               <Text style={tipografia.legenda}>
-                Retirado em {formatarDataHora(item.dtRetirada)}
+                Reservado em {formatarDataHora(item.dtReserva)}
               </Text>
-            )}
+              {item.dtRetirada && (
+                <Text style={tipografia.legenda}>
+                  Retirado em {formatarDataHora(item.dtRetirada)}
+                </Text>
+              )}
+            </Pressable>
             {item.status === 'PENDENTE' && (
               <Botao
                 titulo="Cancelar reserva"
@@ -126,7 +131,7 @@ export default function TelaAtividade() {
                 carregando={cancelando === item.id}
               />
             )}
-          </Pressable>
+          </View>
         )}
       />
     );
@@ -184,5 +189,11 @@ const styles = StyleSheet.create({
   },
   flex: {
     flex: 1,
+  },
+  areaToque: {
+    gap: espacamentos.sm,
+  },
+  pressionado: {
+    opacity: 0.7,
   },
 });
