@@ -13,10 +13,22 @@ const tons: Record<Tom, { fundo: string; texto: string }> = {
   destaque: { fundo: cores.destaqueClaro, texto: '#9A4A0B' },
 };
 
-export function Etiqueta({ texto, tom = 'neutro' }: { texto: string; tom?: Tom }) {
+type EtiquetaProps = {
+  texto: string;
+  tom?: Tom;
+  centralizada?: boolean;
+};
+
+export function Etiqueta({ texto, tom = 'neutro', centralizada = false }: EtiquetaProps) {
   const estilo = tons[tom];
   return (
-    <View style={[styles.etiqueta, { backgroundColor: estilo.fundo }]}>
+    <View
+      style={[
+        styles.etiqueta,
+        { backgroundColor: estilo.fundo },
+        centralizada && styles.centralizada,
+      ]}
+    >
       <Text style={[styles.texto, { color: estilo.texto }]}>{texto}</Text>
     </View>
   );
@@ -28,6 +40,9 @@ const styles = StyleSheet.create({
     borderRadius: raios.pilula,
     paddingHorizontal: espacamentos.sm + 2,
     paddingVertical: 3,
+  },
+  centralizada: {
+    alignSelf: 'center',
   },
   texto: {
     fontFamily: fontes.negrito,

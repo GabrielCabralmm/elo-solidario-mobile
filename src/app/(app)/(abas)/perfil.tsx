@@ -50,7 +50,7 @@ export default function TelaPerfil() {
           <Text style={styles.iniciais}>{iniciais}</Text>
         </View>
         <Text style={tipografia.subtitulo}>{usuario.nome}</Text>
-        <Etiqueta texto={rotuloPerfil[usuario.perfil]} tom="destaque" />
+        <Etiqueta texto={rotuloPerfil[usuario.perfil]} tom="destaque" centralizada />
       </View>
 
       <View style={styles.cartao}>
