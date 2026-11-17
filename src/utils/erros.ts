@@ -8,6 +8,10 @@ type CorpoErro = {
   errors?: Record<string, string[]>;
 };
 
+export function ehErroDeConexao(erro: unknown) {
+  return isAxiosError(erro) && !erro.response;
+}
+
 export function mensagemDeErro(erro: unknown): string {
   if (!isAxiosError(erro)) {
     return 'Algo deu errado. Tente novamente.';

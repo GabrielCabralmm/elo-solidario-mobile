@@ -16,10 +16,11 @@ import {
   listarReservasDaDoacao,
   reservarDoacao,
 } from '@/services/reservaService';
+import { chavesLocais, lerLocal, salvarLocal } from '@/storage/armazenamentoLocal';
 import { cores, espacamentos, raios, sombra, tipografia } from '@/theme';
 import { Conservacao, Doacao, Reserva } from '@/types/api';
 import { confirmar } from '@/utils/confirmar';
-import { mensagemDeErro } from '@/utils/erros';
+import { ehErroDeConexao, mensagemDeErro } from '@/utils/erros';
 import {
   diasAte,
   formatarData,
@@ -47,6 +48,7 @@ export default function TelaDetalheDoacao() {
   const [processando, setProcessando] = useState<string | null>(null);
   const [erro, setErro] = useState<string | null>(null);
   const [sucesso, setSucesso] = useState<string | null>(null);
+  const [salvoOfflineEm, setSalvoOfflineEm] = useState<string | null>(null);
 
   const ehResponsavel =
     !!doacao && (doacao.idDoador === usuario?.id || usuario?.perfil === 'ADMIN');
@@ -55,13 +57,23 @@ export default function TelaDetalheDoacao() {
   const carregar = useCallback(async () => {
     try {
       setErro(null);
+      setSalvoOfflineEm(null);
       const dados = await buscarDoacao(Number(id));
       setDoacao(dados);
+      await salvarLocal(chavesLocais.doacao(dados.id), dados);
       if (dados.idDoador === usuario?.id || usuario?.perfil === 'ADMIN') {
         setReservas(await listarReservasDaDoacao(dados.id));
       }
     } catch (falha) {
-      setErro(mensagemDeErro(falha));
+      const salva = ehErroDeConexao(falha)
+        ? await lerLocal<Doacao>(chavesLocais.doacao(Number(id)))
+        : null;
+      if (salva) {
+        setDoacao(salva.dados);
+        setSalvoOfflineEm(salva.salvoEm);
+      } else {
+        setErro(mensagemDeErro(falha));
+      }
     } finally {
       setCarregando(false);
     }
@@ -173,6 +185,12 @@ export default function TelaDetalheDoacao() {
         </Text>
       </View>
 
+      {salvoOfflineEm && (
+        <Aviso
+          tom="alerta"
+          mensagem={`Sem conexão. Dados salvos no aparelho em ${formatarDataHora(salvoOfflineEm)}.`}
+        />
+      )}
       {sucesso && <Aviso mensagem={sucesso} tom="sucesso" />}
       {erro && <MensagemErro mensagem={erro} />}
 

@@ -11,6 +11,7 @@ import {
 
 import { definirAcaoSessaoExpirada, definirToken } from '@/services/api';
 import * as authService from '@/services/authService';
+import { limparDadosLocais } from '@/storage/armazenamentoLocal';
 import { lerSessao, limparSessao, salvarSessao } from '@/storage/sessao';
 import { RegistroRequest, TokenResponse, Usuario } from '@/types/api';
 
@@ -30,7 +31,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const sair = useCallback(async () => {
     definirToken(null);
-    await limparSessao();
+    await Promise.all([limparSessao(), limparDadosLocais()]);
     setUsuario(null);
   }, []);
 

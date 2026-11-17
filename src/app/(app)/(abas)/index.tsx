@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { Aviso } from '@/components/Aviso';
 import { Botao } from '@/components/Botao';
 import { CampoTexto } from '@/components/CampoTexto';
 import { Carregando } from '@/components/Carregando';
@@ -23,9 +24,11 @@ import { useAuth } from '@/contexts/AuthContext';
 import { listarCategorias } from '@/services/catalogoService';
 import { listarDoacoes } from '@/services/doacaoService';
 import { listarNotificacoes } from '@/services/notificacaoService';
+import { chavesLocais, lerLocal, salvarLocal } from '@/storage/armazenamentoLocal';
 import { cores, espacamentos, fontes, raios, sombra, tipografia } from '@/theme';
 import { Categoria, Doacao } from '@/types/api';
-import { mensagemDeErro } from '@/utils/erros';
+import { ehErroDeConexao, mensagemDeErro } from '@/utils/erros';
+import { formatarDataHora } from '@/utils/formatadores';
 
 export default function TelaVitrine() {
   const { usuario } = useAuth();
@@ -42,23 +45,39 @@ export default function TelaVitrine() {
   const [atualizando, setAtualizando] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
   const [naoLidas, setNaoLidas] = useState(0);
+  const [salvoOfflineEm, setSalvoOfflineEm] = useState<string | null>(null);
 
   const carregar = useCallback(
     async (paginaDesejada: number) => {
+      const semFiltros = !idCategoria && !bairro.trim();
       try {
         setErro(null);
+        setSalvoOfflineEm(null);
         const resposta = await listarDoacoes({
           pagina: paginaDesejada,
           idCategoria,
           bairro: bairro.trim() || undefined,
         });
+        if (paginaDesejada === 0 && semFiltros) {
+          await salvarLocal(chavesLocais.vitrine, resposta.content);
+        }
         setDoacoes((atuais) =>
           paginaDesejada === 0 ? resposta.content : [...atuais, ...resposta.content],
         );
         setPagina(paginaDesejada);
         setTemMais(paginaDesejada + 1 < resposta.page.totalPages);
       } catch (falha) {
-        setErro(mensagemDeErro(falha));
+        const salvas =
+          paginaDesejada === 0 && semFiltros && ehErroDeConexao(falha)
+            ? await lerLocal<Doacao[]>(chavesLocais.vitrine)
+            : null;
+        if (salvas) {
+          setDoacoes(salvas.dados);
+          setTemMais(false);
+          setSalvoOfflineEm(salvas.salvoEm);
+        } else {
+          setErro(mensagemDeErro(falha));
+        }
       }
     },
     [idCategoria, bairro],
@@ -177,7 +196,16 @@ export default function TelaVitrine() {
           onEndReached={aoChegarNoFim}
           onEndReachedThreshold={0.4}
           ListHeaderComponent={
-            erro ? <MensagemErro mensagem={erro} aoTentarNovamente={aoAtualizar} /> : undefined
+            erro ? (
+              <MensagemErro mensagem={erro} aoTentarNovamente={aoAtualizar} />
+            ) : salvoOfflineEm ? (
+              <View style={styles.aviso}>
+                <Aviso
+                  tom="alerta"
+                  mensagem={`Sem conexão. Mostrando as doações salvas no aparelho em ${formatarDataHora(salvoOfflineEm)}.`}
+                />
+              </View>
+            ) : undefined
           }
           ListEmptyComponent={
             erro ? undefined : (
@@ -261,6 +289,9 @@ const styles = StyleSheet.create({
   },
   separador: {
     height: espacamentos.md,
+  },
+  aviso: {
+    marginBottom: espacamentos.md,
   },
   acao: {
     position: 'absolute',
