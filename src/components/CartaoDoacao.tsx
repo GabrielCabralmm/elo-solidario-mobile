@@ -34,10 +34,7 @@ export function CartaoDoacao({ doacao, onPress }: CartaoDoacaoProps) {
         <Text style={[tipografia.subtitulo, styles.titulo]} numberOfLines={2}>
           {doacao.titulo}
         </Text>
-        <Etiqueta
-          texto={rotuloStatusDoacao[doacao.status]}
-          tom={tomStatusDoacao[doacao.status]}
-        />
+        <Etiqueta texto={rotuloStatusDoacao[doacao.status]} tom={tomStatusDoacao[doacao.status]} />
       </View>
 
       <Text style={tipografia.corpo} numberOfLines={2}>

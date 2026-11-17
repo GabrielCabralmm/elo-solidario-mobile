@@ -78,7 +78,9 @@ export default function TelaAtividade() {
   const atualizar = (
     <RefreshControl refreshing={atualizando} onRefresh={aoAtualizar} tintColor={cores.primaria} />
   );
-  const cabecalhoErro = erro ? <MensagemErro mensagem={erro} aoTentarNovamente={aoAtualizar} /> : undefined;
+  const cabecalhoErro = erro ? (
+    <MensagemErro mensagem={erro} aoTentarNovamente={aoAtualizar} />
+  ) : undefined;
 
   if (ehBeneficiario) {
     return (
@@ -103,12 +105,17 @@ export default function TelaAtividade() {
           >
             <View style={styles.linha}>
               <Text style={[tipografia.subtitulo, styles.flex]}>{item.doacao}</Text>
-              <Etiqueta texto={rotuloStatusReserva[item.status]} tom={tomStatusReserva[item.status]} />
+              <Etiqueta
+                texto={rotuloStatusReserva[item.status]}
+                tom={tomStatusReserva[item.status]}
+              />
             </View>
             <Text style={tipografia.corpo}>Retirar em: {item.localRetirada}</Text>
             <Text style={tipografia.legenda}>Reservado em {formatarDataHora(item.dtReserva)}</Text>
             {item.dtRetirada && (
-              <Text style={tipografia.legenda}>Retirado em {formatarDataHora(item.dtRetirada)}</Text>
+              <Text style={tipografia.legenda}>
+                Retirado em {formatarDataHora(item.dtRetirada)}
+              </Text>
             )}
             {item.status === 'PENDENTE' && (
               <Botao

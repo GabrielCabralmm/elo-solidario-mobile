@@ -47,13 +47,20 @@ export default function TelaImpacto() {
 
   if (carregando) return <Carregando mensagem="Calculando o impacto da rede..." />;
 
-  const maiorKg = Math.max(1, ...(impacto?.porCategoria.map((categoria) => categoria.totalKg) ?? [1]));
+  const maiorKg = Math.max(
+    1,
+    ...(impacto?.porCategoria.map((categoria) => categoria.totalKg) ?? [1]),
+  );
 
   return (
     <ScrollView
       contentContainerStyle={styles.conteudo}
       refreshControl={
-        <RefreshControl refreshing={atualizando} onRefresh={aoAtualizar} tintColor={cores.primaria} />
+        <RefreshControl
+          refreshing={atualizando}
+          onRefresh={aoAtualizar}
+          tintColor={cores.primaria}
+        />
       }
     >
       {erro && <MensagemErro mensagem={erro} aoTentarNovamente={aoAtualizar} />}
@@ -67,10 +74,26 @@ export default function TelaImpacto() {
           </View>
 
           <View style={styles.grade}>
-            <Indicador icone="scale" valor={`${formatarNumero(impacto.alimentosDestinadosKg, 1)} kg`} rotulo="de alimentos destinados" />
-            <Indicador icone="flame" valor={formatarNumero(impacto.energiaEstimadaKcal)} rotulo="kcal estimadas" />
-            <Indicador icone="checkmark-done" valor={String(impacto.doacoesConcluidas)} rotulo="doações entregues" />
-            <Indicador icone="people" valor={String(impacto.beneficiariosAtendidos)} rotulo="beneficiários atendidos" />
+            <Indicador
+              icone="scale"
+              valor={`${formatarNumero(impacto.alimentosDestinadosKg, 1)} kg`}
+              rotulo="de alimentos destinados"
+            />
+            <Indicador
+              icone="flame"
+              valor={formatarNumero(impacto.energiaEstimadaKcal)}
+              rotulo="kcal estimadas"
+            />
+            <Indicador
+              icone="checkmark-done"
+              valor={String(impacto.doacoesConcluidas)}
+              rotulo="doações entregues"
+            />
+            <Indicador
+              icone="people"
+              valor={String(impacto.beneficiariosAtendidos)}
+              rotulo="beneficiários atendidos"
+            />
           </View>
 
           <View style={styles.cartao}>
@@ -92,7 +115,8 @@ export default function TelaImpacto() {
           </View>
 
           <Text style={[tipografia.legenda, styles.nota]}>
-            {impacto.doacoesDisponiveis} doações disponíveis agora. Refeições estimadas com 600 kcal cada.
+            {impacto.doacoesDisponiveis} doações disponíveis agora. Refeições estimadas com 600 kcal
+            cada.
           </Text>
         </>
       )}

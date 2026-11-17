@@ -11,7 +11,14 @@ type CampoTextoProps = TextInputProps & {
   senha?: boolean;
 };
 
-export function CampoTexto({ rotulo, erro, icone, senha = false, style, ...props }: CampoTextoProps) {
+export function CampoTexto({
+  rotulo,
+  erro,
+  icone,
+  senha = false,
+  style,
+  ...props
+}: CampoTextoProps) {
   const [focado, setFocado] = useState(false);
   const [senhaVisivel, setSenhaVisivel] = useState(false);
 

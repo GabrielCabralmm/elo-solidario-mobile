@@ -90,7 +90,12 @@ export default function TelaLogin() {
               onSubmitEditing={aoEntrar}
             />
             {erro && <MensagemErro mensagem={erro} />}
-            <Botao titulo="Entrar" onPress={aoEntrar} carregando={enviando} icone="log-in-outline" />
+            <Botao
+              titulo="Entrar"
+              onPress={aoEntrar}
+              carregando={enviando}
+              icone="log-in-outline"
+            />
           </View>
 
           <View style={styles.rodape}>

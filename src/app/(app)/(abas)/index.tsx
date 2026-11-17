@@ -135,7 +135,11 @@ export default function TelaVitrine() {
           onChangeText={setBairro}
           autoCapitalize="words"
         />
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chips}>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.chips}
+        >
           <ChipFiltro
             rotulo="Todas"
             selecionado={idCategoria === undefined}
@@ -164,11 +168,17 @@ export default function TelaVitrine() {
           contentContainerStyle={styles.lista}
           ItemSeparatorComponent={() => <View style={styles.separador} />}
           refreshControl={
-            <RefreshControl refreshing={atualizando} onRefresh={aoAtualizar} tintColor={cores.primaria} />
+            <RefreshControl
+              refreshing={atualizando}
+              onRefresh={aoAtualizar}
+              tintColor={cores.primaria}
+            />
           }
           onEndReached={aoChegarNoFim}
           onEndReachedThreshold={0.4}
-          ListHeaderComponent={erro ? <MensagemErro mensagem={erro} aoTentarNovamente={aoAtualizar} /> : undefined}
+          ListHeaderComponent={
+            erro ? <MensagemErro mensagem={erro} aoTentarNovamente={aoAtualizar} /> : undefined
+          }
           ListEmptyComponent={
             erro ? undefined : (
               <EstadoVazio
@@ -177,13 +187,20 @@ export default function TelaVitrine() {
               />
             )
           }
-          ListFooterComponent={carregandoMais ? <Carregando mensagem="Carregando mais..." /> : undefined}
+          ListFooterComponent={
+            carregandoMais ? <Carregando mensagem="Carregando mais..." /> : undefined
+          }
         />
       )}
 
       {podeDoar && (
         <View style={styles.acao}>
-          <Botao titulo="Doar alimentos" icone="add-circle-outline" variante="destaque" onPress={() => router.push('/doacao/nova')} />
+          <Botao
+            titulo="Doar alimentos"
+            icone="add-circle-outline"
+            variante="destaque"
+            onPress={() => router.push('/doacao/nova')}
+          />
         </View>
       )}
     </SafeAreaView>

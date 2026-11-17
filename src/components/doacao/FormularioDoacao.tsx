@@ -1,6 +1,14 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useState } from 'react';
-import { KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import {
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 
 import { Botao } from '@/components/Botao';
 import { CampoTexto } from '@/components/CampoTexto';
@@ -92,7 +100,10 @@ export function FormularioDoacao({
   }
 
   function removerItem(chave: string) {
-    setValores((atual) => ({ ...atual, itens: atual.itens.filter((item) => item.chave !== chave) }));
+    setValores((atual) => ({
+      ...atual,
+      itens: atual.itens.filter((item) => item.chave !== chave),
+    }));
   }
 
   function aoSelecionarAlimento(alimento: Alimento) {
@@ -177,7 +188,10 @@ export function FormularioDoacao({
   }
 
   return (
-    <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+    <KeyboardAvoidingView
+      style={styles.flex}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    >
       <ScrollView contentContainerStyle={styles.conteudo} keyboardShouldPersistTaps="handled">
         {exibirAssistente && <AssistenteIA aoSugerir={aplicarSugestao} />}
 
@@ -282,7 +296,9 @@ export function FormularioDoacao({
               placeholder="DD/MM/AAAA"
               keyboardType="number-pad"
               value={item.validade}
-              onChangeText={(valor) => alterarItem(item.chave, { validade: aplicarMascaraData(valor) })}
+              onChangeText={(valor) =>
+                alterarItem(item.chave, { validade: aplicarMascaraData(valor) })
+              }
               erro={erros.porItem[item.chave]}
             />
           </View>
@@ -296,7 +312,12 @@ export function FormularioDoacao({
         />
 
         {erroEnvio && <MensagemErro mensagem={erroEnvio} />}
-        <Botao titulo={textoBotao} icone="checkmark-circle-outline" onPress={aoEnviar} carregando={salvando} />
+        <Botao
+          titulo={textoBotao}
+          icone="checkmark-circle-outline"
+          onPress={aoEnviar}
+          carregando={salvando}
+        />
       </ScrollView>
 
       <SeletorAlimento

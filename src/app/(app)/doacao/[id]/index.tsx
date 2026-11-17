@@ -156,7 +156,9 @@ export default function TelaDetalheDoacao() {
   }
 
   if (!doacao) {
-    return <MensagemErro mensagem={erro ?? 'Doação não encontrada.'} aoTentarNovamente={carregar} />;
+    return (
+      <MensagemErro mensagem={erro ?? 'Doação não encontrada.'} aoTentarNovamente={carregar} />
+    );
   }
 
   const dias = doacao.venceEm ? diasAte(doacao.venceEm) : null;
@@ -243,13 +245,17 @@ export default function TelaDetalheDoacao() {
           {reservas.map((reserva) => (
             <View key={reserva.id} style={styles.cartao}>
               <View style={styles.linhaReserva}>
-                <Text style={[tipografia.corpoDestaque, styles.itemTexto]}>{reserva.beneficiario}</Text>
+                <Text style={[tipografia.corpoDestaque, styles.itemTexto]}>
+                  {reserva.beneficiario}
+                </Text>
                 <Etiqueta
                   texto={rotuloStatusReserva[reserva.status]}
                   tom={tomStatusReserva[reserva.status]}
                 />
               </View>
-              <Text style={tipografia.legenda}>Reservado em {formatarDataHora(reserva.dtReserva)}</Text>
+              <Text style={tipografia.legenda}>
+                Reservado em {formatarDataHora(reserva.dtReserva)}
+              </Text>
               {reserva.observacao && <Text style={tipografia.corpo}>“{reserva.observacao}”</Text>}
               {reserva.status === 'PENDENTE' && (
                 <View style={styles.acoes}>

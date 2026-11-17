@@ -18,7 +18,12 @@ export function MensagemErro({ mensagem, aoTentarNovamente }: MensagemErroProps)
         <Text style={[tipografia.corpo, styles.texto]}>{mensagem}</Text>
       </View>
       {aoTentarNovamente && (
-        <Botao titulo="Tentar novamente" onPress={aoTentarNovamente} variante="perigo" icone="refresh" />
+        <Botao
+          titulo="Tentar novamente"
+          onPress={aoTentarNovamente}
+          variante="perigo"
+          icone="refresh"
+        />
       )}
     </View>
   );

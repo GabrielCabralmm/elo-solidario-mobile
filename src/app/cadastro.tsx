@@ -42,7 +42,8 @@ export default function TelaCadastro() {
     if (!REGEX_EMAIL.test(campos.email.trim())) novosErros.email = 'Informe um e-mail válido';
     if (!campos.bairro.trim()) novosErros.bairro = 'Informe seu bairro';
     if (campos.senha.length < 6) novosErros.senha = 'A senha deve ter pelo menos 6 caracteres';
-    if (campos.confirmarSenha !== campos.senha) novosErros.confirmarSenha = 'As senhas não conferem';
+    if (campos.confirmarSenha !== campos.senha)
+      novosErros.confirmarSenha = 'As senhas não conferem';
     setErrosCampos(novosErros);
     return Object.keys(novosErros).length === 0;
   }

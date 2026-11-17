@@ -65,9 +65,15 @@ export default function TelaNotificacoes() {
       keyExtractor={(notificacao) => String(notificacao.id)}
       contentContainerStyle={styles.lista}
       refreshControl={
-        <RefreshControl refreshing={atualizando} onRefresh={aoAtualizar} tintColor={cores.primaria} />
+        <RefreshControl
+          refreshing={atualizando}
+          onRefresh={aoAtualizar}
+          tintColor={cores.primaria}
+        />
       }
-      ListHeaderComponent={erro ? <MensagemErro mensagem={erro} aoTentarNovamente={aoAtualizar} /> : undefined}
+      ListHeaderComponent={
+        erro ? <MensagemErro mensagem={erro} aoTentarNovamente={aoAtualizar} /> : undefined
+      }
       ListEmptyComponent={
         <EstadoVazio
           titulo="Sem notificações"
@@ -83,7 +89,9 @@ export default function TelaNotificacoes() {
         >
           <Ionicons name={iconePorTipo[item.tipo]} size={26} color={cores.primaria} />
           <View style={styles.texto}>
-            <Text style={item.lida ? tipografia.corpo : tipografia.corpoDestaque}>{item.mensagem}</Text>
+            <Text style={item.lida ? tipografia.corpo : tipografia.corpoDestaque}>
+              {item.mensagem}
+            </Text>
             <Text style={tipografia.legenda}>{formatarDataHora(item.dtCriacao)}</Text>
           </View>
           {!item.lida && <View style={styles.ponto} />}

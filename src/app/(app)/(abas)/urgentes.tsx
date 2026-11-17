@@ -57,7 +57,8 @@ export default function TelaUrgentes() {
     <View style={styles.tela}>
       <View style={styles.topo}>
         <Text style={tipografia.legenda}>
-          Doações disponíveis que vencem em breve. Retire primeiro o que corre risco de ser jogado fora.
+          Doações disponíveis que vencem em breve. Retire primeiro o que corre risco de ser jogado
+          fora.
         </Text>
         <View style={styles.chips}>
           {PRAZOS.map((prazo) => (
@@ -84,9 +85,15 @@ export default function TelaUrgentes() {
           keyExtractor={(doacao) => String(doacao.idDoacao)}
           contentContainerStyle={styles.lista}
           refreshControl={
-            <RefreshControl refreshing={atualizando} onRefresh={aoAtualizar} tintColor={cores.primaria} />
+            <RefreshControl
+              refreshing={atualizando}
+              onRefresh={aoAtualizar}
+              tintColor={cores.primaria}
+            />
           }
-          ListHeaderComponent={erro ? <MensagemErro mensagem={erro} aoTentarNovamente={aoAtualizar} /> : undefined}
+          ListHeaderComponent={
+            erro ? <MensagemErro mensagem={erro} aoTentarNovamente={aoAtualizar} /> : undefined
+          }
           ListEmptyComponent={
             erro ? undefined : (
               <EstadoVazio

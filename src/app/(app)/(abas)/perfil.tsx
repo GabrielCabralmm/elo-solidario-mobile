@@ -6,7 +6,15 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Botao } from '@/components/Botao';
 import { Etiqueta } from '@/components/Etiqueta';
 import { useAuth } from '@/contexts/AuthContext';
-import { ALTURA_MINIMA_TOQUE, cores, espacamentos, fontes, raios, sombra, tipografia } from '@/theme';
+import {
+  ALTURA_MINIMA_TOQUE,
+  cores,
+  espacamentos,
+  fontes,
+  raios,
+  sombra,
+  tipografia,
+} from '@/theme';
 import { confirmar } from '@/utils/confirmar';
 
 const rotuloPerfil = {
@@ -54,11 +62,25 @@ export default function TelaPerfil() {
       </View>
 
       <View style={styles.cartao}>
-        <ItemMenu icone="notifications-outline" titulo="Notificações" onPress={() => router.push('/notificacoes')} />
-        <ItemMenu icone="information-circle-outline" titulo="Sobre o App" onPress={() => router.push('/sobre')} />
+        <ItemMenu
+          icone="notifications-outline"
+          titulo="Notificações"
+          onPress={() => router.push('/notificacoes')}
+        />
+        <ItemMenu
+          icone="information-circle-outline"
+          titulo="Sobre o App"
+          onPress={() => router.push('/sobre')}
+        />
       </View>
 
-      <Botao titulo="Sair da conta" icone="log-out-outline" variante="perigo" onPress={aoSair} carregando={saindo} />
+      <Botao
+        titulo="Sair da conta"
+        icone="log-out-outline"
+        variante="perigo"
+        onPress={aoSair}
+        carregando={saindo}
+      />
     </ScrollView>
   );
 }

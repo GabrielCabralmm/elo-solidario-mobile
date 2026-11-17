@@ -17,6 +17,7 @@ module.exports = ({ config }) => ({
     ...config.extra,
     commitHash: obterCommit(),
     apiJavaUrl: process.env.EXPO_PUBLIC_API_JAVA_URL ?? 'https://elo-solidario-java.onrender.com',
-    apiDotnetUrl: process.env.EXPO_PUBLIC_API_DOTNET_URL ?? 'https://elo-solidario-dotnet.onrender.com',
+    apiDotnetUrl:
+      process.env.EXPO_PUBLIC_API_DOTNET_URL ?? 'https://elo-solidario-dotnet.onrender.com',
   },
 });
