@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   KeyboardAvoidingView,
   Platform,
@@ -10,13 +10,15 @@ import {
   View,
 } from 'react-native';
 
+import { Aviso } from '@/components/Aviso';
 import { Botao } from '@/components/Botao';
 import { CampoTexto } from '@/components/CampoTexto';
 import { ChipFiltro } from '@/components/ChipFiltro';
 import { MensagemErro } from '@/components/MensagemErro';
+import { lerLocal, removerLocal, salvarLocal } from '@/storage/armazenamentoLocal';
 import { cores, espacamentos, raios, sombra, tipografia } from '@/theme';
 import { Alimento, DoacaoRequest, SugestaoDoacao, Unidade } from '@/types/api';
-import { aplicarMascaraData, dataBrParaIso, diasAte } from '@/utils/formatadores';
+import { aplicarMascaraData, dataBrParaIso, diasAte, formatarDataHora } from '@/utils/formatadores';
 
 import { AssistenteIA } from './AssistenteIA';
 import { SeletorAlimento } from './SeletorAlimento';
@@ -51,7 +53,8 @@ type FormularioDoacaoProps = {
   valoresIniciais: ValoresFormulario;
   textoBotao: string;
   exibirAssistente?: boolean;
-  aoSalvar: (doacao: DoacaoRequest) => Promise<void>;
+  chaveRascunho?: string;
+  aoSalvar: (doacao: DoacaoRequest) => Promise<boolean>;
   erroEnvio: string | null;
 };
 
@@ -72,6 +75,15 @@ export function novoItem(parcial: Partial<ItemFormulario> = {}): ItemFormulario 
   };
 }
 
+function temConteudo(valores: ValoresFormulario) {
+  return (
+    !!valores.titulo.trim() ||
+    !!valores.localRetirada.trim() ||
+    !!valores.observacao.trim() ||
+    valores.itens.some((item) => item.idAlimento !== null)
+  );
+}
+
 function paraNumero(valor: string) {
   return Number(valor.replace(',', '.'));
 }
@@ -80,6 +92,7 @@ export function FormularioDoacao({
   valoresIniciais,
   textoBotao,
   exibirAssistente = false,
+  chaveRascunho,
   aoSalvar,
   erroEnvio,
 }: FormularioDoacaoProps) {
@@ -87,6 +100,41 @@ export function FormularioDoacao({
   const [erros, setErros] = useState<ErrosFormulario>({ porItem: {} });
   const [itemEmEdicao, setItemEmEdicao] = useState<string | null>(null);
   const [salvando, setSalvando] = useState(false);
+  const [rascunhoRecuperadoEm, setRascunhoRecuperadoEm] = useState<string | null>(null);
+  const rascunhoCarregado = useRef(!chaveRascunho);
+
+  useEffect(() => {
+    if (!chaveRascunho) return;
+    lerLocal<ValoresFormulario>(chaveRascunho)
+      .then((rascunho) => {
+        if (rascunho && temConteudo(rascunho.dados)) {
+          setValores({
+            ...rascunho.dados,
+            itens: rascunho.dados.itens.map(({ chave, ...item }) => novoItem(item)),
+          });
+          setRascunhoRecuperadoEm(rascunho.salvoEm);
+        }
+      })
+      .finally(() => {
+        rascunhoCarregado.current = true;
+      });
+  }, [chaveRascunho]);
+
+  useEffect(() => {
+    if (!chaveRascunho || !rascunhoCarregado.current) return;
+    const espera = setTimeout(() => {
+      if (temConteudo(valores)) {
+        salvarLocal(chaveRascunho, valores);
+      }
+    }, 600);
+    return () => clearTimeout(espera);
+  }, [valores, chaveRascunho]);
+
+  async function descartarRascunho() {
+    if (chaveRascunho) await removerLocal(chaveRascunho);
+    setValores(valoresIniciais);
+    setRascunhoRecuperadoEm(null);
+  }
 
   function alterar(campo: keyof Omit<ValoresFormulario, 'itens'>, valor: string) {
     setValores((atual) => ({ ...atual, [campo]: valor }));
@@ -169,7 +217,7 @@ export function FormularioDoacao({
     if (!validar()) return;
     setSalvando(true);
     try {
-      await aoSalvar({
+      const salvou = await aoSalvar({
         titulo: valores.titulo.trim(),
         bairro: valores.bairro.trim(),
         localRetirada: valores.localRetirada.trim(),
@@ -182,6 +230,9 @@ export function FormularioDoacao({
           dtValidade: dataBrParaIso(item.validade)!,
         })),
       });
+      if (salvou && chaveRascunho) {
+        await removerLocal(chaveRascunho);
+      }
     } finally {
       setSalvando(false);
     }
@@ -193,6 +244,15 @@ export function FormularioDoacao({
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       <ScrollView contentContainerStyle={styles.conteudo} keyboardShouldPersistTaps="handled">
+        {rascunhoRecuperadoEm && (
+          <View style={styles.rascunho}>
+            <Aviso
+              tom="info"
+              mensagem={`Rascunho recuperado do aparelho (salvo em ${formatarDataHora(rascunhoRecuperadoEm)}).`}
+            />
+            <Botao titulo="Descartar rascunho" variante="texto" onPress={descartarRascunho} />
+          </View>
+        )}
         {exibirAssistente && <AssistenteIA aoSugerir={aplicarSugestao} />}
 
         <CampoTexto
@@ -370,6 +430,9 @@ const styles = StyleSheet.create({
   unidades: {
     flexDirection: 'row',
     gap: espacamentos.sm,
+  },
+  rascunho: {
+    gap: espacamentos.xs,
   },
   erro: {
     ...tipografia.legenda,

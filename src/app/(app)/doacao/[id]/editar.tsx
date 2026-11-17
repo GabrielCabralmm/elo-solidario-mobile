@@ -47,8 +47,10 @@ export default function TelaEditarDoacao() {
     try {
       await atualizarDoacao(Number(id), doacao);
       router.back();
+      return true;
     } catch (falha) {
       setErroEnvio(mensagemDeErro(falha));
+      return false;
     }
   }
 
