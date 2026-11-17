@@ -1,4 +1,4 @@
-import axios, { AxiosInstance } from 'axios';
+import { AxiosInstance, create } from 'axios';
 import Constants from 'expo-constants';
 
 const extra = Constants.expoConfig?.extra ?? {};
@@ -18,7 +18,7 @@ export function definirAcaoSessaoExpirada(acao: (() => void) | null) {
 }
 
 function criarCliente(baseURL: string): AxiosInstance {
-  const cliente = axios.create({
+  const cliente = create({
     baseURL,
     timeout: 30000,
     headers: { 'Content-Type': 'application/json' },
