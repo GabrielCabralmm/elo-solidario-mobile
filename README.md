@@ -7,8 +7,8 @@ Global Solution 2026/2 · CitizenTech · FIAP 2TDS
 | Gabriel Cabral Mendes Mariano  | 563230 | 2TDSPO |
 | João Victor Santana dos Santos | 566063 | 2TDSPX |
 
-- **Vídeo (até 5 min):** <link do YouTube>
-- **Firebase App Distribution:** app publicado com o e-mail do professor como tester
+- **Stack:** React Native com **Expo** (SDK 58), Expo Router, TypeScript, Axios e AsyncStorage
+- **Vídeo (até 3 min):** <link do YouTube>
 
 ## O app
 
@@ -58,8 +58,20 @@ O **EloSolidário** conecta quem tem alimentos sobrando (moradores, mercados e p
 | 3. Autenticação      | Cadastro e login reais na API Java (JWT). O token fica no **SecureStore**. Logout limpa a sessão. As rotas internas são protegidas com `Stack.Protected` e, se o token expirar (401), o usuário volta ao login                                                                                                                                                   |
 | 4. Estilização       | Paleta própria (verde, laranja e creme), fonte **Nunito** em `assets/fonts`, ícone, splash e ilustração próprios em `assets/images`. Áreas de toque com no mínimo 48 dp e `accessibilityLabel`/`accessibilityRole`, seguindo as guidelines de Android e iOS                                                                                                      |
 | 5. Arquitetura       | Camadas separadas (abaixo), TypeScript estrito, **ESLint** (`eslint-config-expo`) e **Prettier**                                                                                                                                                                                                                                                                 |
-| 6. Vídeo             | Link no início deste README e no `.txt` da entrega                                                                                                                                                                                                                                                                                                               |
-| 7. Publicação        | APK gerado pelo **EAS Build** e distribuído no **Firebase App Distribution**. A tela "Sobre o App" mostra o hash do commit usado na build                                                                                                                                                                                                                        |
+| 6. Vídeo             | Até 3 minutos, com o link no início deste README e no `.txt` da entrega                                                                                                                                                                                                                                                                                          |
+| 7. Publicação        | Opcional nesta entrega. O projeto já está configurado para gerar o APK pelo **EAS Build**, e a tela "Sobre o App" mostra o hash do commit da build                                                                                                                                                                                                               |
+
+## Persistência local (AsyncStorage)
+
+Os dados são gravados no próprio aparelho com o **AsyncStorage** (`src/storage/armazenamentoLocal.ts`), em três situações:
+
+| O que fica salvo         | Chave                      | Para que serve                                                                                                                                               |
+| ------------------------ | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Rascunho da nova doação  | `elo:rascunho:{idUsuario}` | Salvo enquanto o doador digita. Se ele sair do app, o rascunho volta ao abrir "Nova doação", com a opção de descartar. É apagado quando a doação é publicada |
+| Última vitrine carregada | `elo:vitrine`              | Sem conexão, a lista salva aparece com o aviso "Sem conexão" e a data em que foi salva                                                                       |
+| Doações já abertas       | `elo:doacao:{id}`          | O detalhe pode ser consultado sem internet                                                                                                                   |
+
+O token de login fica separado, no **SecureStore**, que é criptografado. No logout, a sessão e todos os dados `elo:` são apagados do aparelho.
 
 ## Arquitetura
 
@@ -79,7 +91,7 @@ src/
 │   └── doacao/             # Formulário, seletor do catálogo e assistente de IA
 ├── contexts/               # AuthContext: sessão, login, cadastro e logout
 ├── services/               # Acesso às APIs (Axios): um serviço por recurso
-├── storage/                # Persistência da sessão (SecureStore)
+├── storage/                # Sessão (SecureStore) e dados locais (AsyncStorage)
 ├── theme/                  # Cores, tipografia e espaçamentos
 ├── types/                  # Tipos dos contratos das APIs
 └── utils/                  # Formatação, mensagens de erro e confirmação
@@ -101,9 +113,9 @@ Fluxo de uma requisição: **tela** → **serviço** (`src/services`) → **clie
 | Data de validade com máscara                | Evita uma biblioteca nativa extra só para escolher datas                                        |
 | Sem biblioteca de estado global             | O Context API basta para a sessão, e cada tela cuida dos próprios dados                         |
 
-## Como rodar
+## Como executar
 
-Pré-requisitos: Node 20+ e o app **Expo Go** ou um emulador Android.
+Pré-requisitos: Node 20+.
 
 ```bash
 npm install
@@ -111,12 +123,21 @@ cp .env.example .env    # ajuste as URLs das APIs, se necessário
 npx expo start
 ```
 
+Com o servidor iniciado, pressione **`w`** para abrir o app no navegador. Também é possível ler o QR Code com o **Expo Go** ou pressionar **`a`** para abrir no emulador Android.
+
 | Variável                     | Padrão                                      |
 | ---------------------------- | ------------------------------------------- |
 | `EXPO_PUBLIC_API_JAVA_URL`   | `https://elo-solidario-java.onrender.com`   |
 | `EXPO_PUBLIC_API_DOTNET_URL` | `https://elo-solidario-dotnet.onrender.com` |
 
-Usuários de teste (senha **`Elo@2026`**): `ana.souza@email.com` (doador) e `maria.oliveira@email.com` (beneficiária).
+### Usuário de teste
+
+| Perfil       | E-mail                     | Senha      |
+| ------------ | -------------------------- | ---------- |
+| Doador       | `ana.souza@email.com`      | `Elo@2026` |
+| Beneficiário | `maria.oliveira@email.com` | `Elo@2026` |
+
+Também é possível criar uma conta nova na tela de cadastro.
 
 Verificações de código:
 
@@ -126,7 +147,7 @@ npm run typecheck
 npx prettier --check .
 ```
 
-## Publicação (EAS + Firebase App Distribution)
+## Publicação (opcional)
 
 ```bash
 npx eas-cli@latest login
