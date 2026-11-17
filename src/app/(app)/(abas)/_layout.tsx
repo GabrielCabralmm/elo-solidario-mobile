@@ -1,6 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
 import { ColorValue } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useAuth } from '@/contexts/AuthContext';
 import { cores, fontes } from '@/theme';
@@ -16,6 +17,7 @@ function iconeDaAba(ativo: NomeIcone, inativo: NomeIcone) {
 
 export default function LayoutAbas() {
   const { usuario } = useAuth();
+  const margens = useSafeAreaInsets();
   const ehBeneficiario = usuario?.perfil === 'BENEFICIARIO';
 
   return (
@@ -26,9 +28,14 @@ export default function LayoutAbas() {
         headerShadowVisible: false,
         tabBarActiveTintColor: cores.primaria,
         tabBarInactiveTintColor: cores.textoSecundario,
-        tabBarLabelStyle: { fontFamily: fontes.semiBold, fontSize: 12, lineHeight: 16 },
-        tabBarItemStyle: { paddingVertical: 2 },
-        tabBarStyle: { backgroundColor: cores.superficie, borderTopColor: cores.borda },
+        tabBarLabelStyle: { fontFamily: fontes.semiBold, fontSize: 12, lineHeight: 18 },
+        tabBarStyle: {
+          backgroundColor: cores.superficie,
+          borderTopColor: cores.borda,
+          height: 72 + margens.bottom,
+          paddingTop: 4,
+          paddingBottom: margens.bottom + 4,
+        },
         sceneStyle: { backgroundColor: cores.fundo },
       }}
     >
