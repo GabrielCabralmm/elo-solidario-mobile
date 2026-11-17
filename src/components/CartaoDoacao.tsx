@@ -55,16 +55,18 @@ export function CartaoDoacao({ doacao, onPress }: CartaoDoacaoProps) {
             color={venceEmBreve ? cores.alerta : cores.textoSecundario}
           />
           <Text style={[tipografia.legenda, venceEmBreve && styles.textoUrgente]}>
-            {venceEmBreve
-              ? dias! <= 0
-                ? 'Vence hoje'
-                : `Vence em ${dias} dia${dias === 1 ? '' : 's'}`
-              : `Validade: ${formatarData(doacao.venceEm)}`}
+            {venceEmBreve ? textoVencimento(dias!) : `Validade: ${formatarData(doacao.venceEm)}`}
           </Text>
         </View>
       )}
     </Pressable>
   );
+}
+
+function textoVencimento(dias: number) {
+  if (dias < 0) return 'Vencido';
+  if (dias === 0) return 'Vence hoje';
+  return `Vence em ${dias} dia${dias === 1 ? '' : 's'}`;
 }
 
 function Info({ icone, texto }: { icone: keyof typeof Ionicons.glyphMap; texto: string }) {
