@@ -4,6 +4,9 @@ function obterCommit() {
   if (process.env.EAS_BUILD_GIT_COMMIT_HASH) {
     return process.env.EAS_BUILD_GIT_COMMIT_HASH;
   }
+  if (process.env.RENDER_GIT_COMMIT) {
+    return process.env.RENDER_GIT_COMMIT;
+  }
   try {
     return execSync('git rev-parse HEAD').toString().trim();
   } catch {
