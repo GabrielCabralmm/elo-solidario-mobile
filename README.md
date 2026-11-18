@@ -9,6 +9,7 @@ Global Solution 2026/2 · CitizenTech · FIAP 2TDS
 
 - **Stack:** React Native com **Expo** (SDK 58), Expo Router, TypeScript, Axios e AsyncStorage
 - **Vídeo (até 3 min):** <link do YouTube>
+- **Versão web (Render):** https://elo-solidario-mobile.onrender.com
 
 ## O app
 
