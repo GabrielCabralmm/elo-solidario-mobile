@@ -8,7 +8,7 @@ Global Solution 2026/2 · CitizenTech · FIAP 2TDS
 | João Victor Santana dos Santos | 566063 | 2TDSPX |
 
 - **Stack:** React Native com **Expo** (SDK 58), Expo Router, TypeScript, Axios e AsyncStorage
-- **Vídeo (até 3 min):** <link do YouTube>
+- **Vídeo (até 3 min):** https://youtu.be/GhTBn2tK7XU
 - **Versão web (Render):** https://elo-solidario-mobile.onrender.com
 
 ## O app
